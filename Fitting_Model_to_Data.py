@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[46]:
 
 
 import numpy as np
@@ -11,7 +11,7 @@ from scipy import optimize
 import os
 
 
-# In[2]:
+# In[57]:
 
 
 # Exercise 1
@@ -57,7 +57,14 @@ y_best = result.x[0]*x_best + result.x[1]
 plt.plot(x_best,y_best, 'k-')
 
 
-# In[3]:
+# In[48]:
+
+
+print(result.x[0])
+print(result.x[1])
+
+
+# In[59]:
 
 
 # Exercise 2
@@ -78,17 +85,20 @@ result = optimize.minimize(chi_sq, [20, 150])
 x_best = np.linspace(min(x),max(x))
 y_best = result.x[0]*x_best + result.x[1]
 
+slope = result.x[0]
+y_int = result.x[1]
+
 # Plotting best fit line
 plt.plot(x_best,y_best, 'k-')
 
 
-# In[4]:
+# In[50]:
 
 
 result.x[1]
 
 
-# In[5]:
+# In[51]:
 
 
 # Exercise 3
@@ -129,7 +139,7 @@ plt.ylim(0,700)
 # 
 # ![exercise_4.jpg](attachment:exercise_4.jpg)
 
-# In[6]:
+# In[52]:
 
 
 # Exercise 5
@@ -138,11 +148,12 @@ plt.ylim(0,700)
 # starting the research, so I'm going to skip this exercise at least for now.
 
 
-# In[42]:
+# In[53]:
 
 
 # Exercise 6
 
+# 
 ID = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 x = [201, 244, 47, 287, 203, 58, 210, 202, 198, 158, 165, 201, 157, 131, 166, 160, 186, 125, 218, 146]
 y = [592, 401, 583, 402, 495, 173, 479, 504, 510, 416, 393, 442, 317, 311, 400, 337, 423, 334, 533, 344]
@@ -165,32 +176,12 @@ for i in range(1000):
     L = Likelihood(15,150,0.2,0,20)
 
 
-# In[27]:
-
-
-m = 0.5
-b = 200
-P_b = 0.1
-V_b = 1
-Y_b = 1
-
-Likelihood(m,b,P_b, Y_b, V_b)
-
-
-# In[38]:
-
-
-x = np.zeros((2,100))
-x[0][1] = 1
-x
-
-
-# In[115]:
+# In[61]:
 
 
 def MCMC(m,b,P_b, V_b, Y_b, n = 100): # n is the number of iterations run
     L = Likelihood(m,b,P_b, V_b, Y_b)
-    params = np.zeros((2,n))
+    params = np.zeros((5,n))
     for i in range(n): 
         # Moving to a new spot in parameter space
         m_new = m + np.random.normal(0,1)
@@ -213,9 +204,15 @@ def MCMC(m,b,P_b, V_b, Y_b, n = 100): # n is the number of iterations run
             Y_b = Y_b_new
             params[0][i] = m
             params[1][i] = b
+            params[2][i] = P_b
+            params[3][i] = V_b
+            params[4][i] = Y_b
         else:
             params[0][i] = m
             params[1][i] = b
+            params[2][i] = P_b
+            params[3][i] = V_b
+            params[4][i] = Y_b
      # Creating subplots
     f, ax = plt.subplots(1, 3, figsize=[17,5])
     f.subplots_adjust(wspace=0.3)
@@ -232,11 +229,21 @@ def MCMC(m,b,P_b, V_b, Y_b, n = 100): # n is the number of iterations run
     ax[2].set_xlabel('b')
     ax[2].set_ylabel('frequency')
     
+    plt.savefig('MCMC.png')
+    
     return L, params
 
 
-# In[116]:
+# In[62]:
 
 
 L, params = MCMC(0.5, 200, 0.1, 1, 1, n = 10000)
+
+
+# In[60]:
+
+
+# The actual slope 
+print('The actual slope is ' + str(slope))
+print('The actual y-intercept is ' + str(y_int))
 

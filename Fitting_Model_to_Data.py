@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import scipy as sp
 from scipy import optimize
 import os
+import random
 
 
 # In[57]:
@@ -195,7 +196,8 @@ def MCMC(m,b,P_b, V_b, Y_b, n = 100): # n is the number of iterations run
         
         # finding difference between old and new values
         d = L_new - L
-        if d >= 0:
+        u = random.uniform(0,1) # defining the random number to be accepted or rejected
+        if d >= np.log(u):
             L = L_new
             m = m_new
             b = b_new

@@ -180,7 +180,11 @@ for i in range(1000):
 # In[61]:
 
 
-def MCMC(m,b,P_b, V_b, Y_b, n = 100): # n is the number of iterations run
+parser = argparse.ArgumentParser(description = 'Choose number of MCMC runs')
+parser.add_argument('runs', type = int, help = 'Number of iterations in the MCMC algorithm')
+args = parser.parse_args()
+
+def MCMC(m,b,P_b, V_b, Y_b, args.runs = 100): # n is the number of iterations run
     L = Likelihood(m,b,P_b, V_b, Y_b)
     params = np.zeros((5,n))
     for i in range(n): 
@@ -196,7 +200,7 @@ def MCMC(m,b,P_b, V_b, Y_b, n = 100): # n is the number of iterations run
         
         # finding difference between old and new values
         d = L_new - L
-        u = random.uniform(0,1) # defining the random number to be accepted or rejected
+        u = random.uniform(0,1)
         if d >= np.log(u):
             L = L_new
             m = m_new
@@ -231,15 +235,11 @@ def MCMC(m,b,P_b, V_b, Y_b, n = 100): # n is the number of iterations run
     ax[2].set_xlabel('b')
     ax[2].set_ylabel('frequency')
     
+    # Saving figure and array of parameters
     plt.savefig('MCMC.png')
+    np.savetxt('data.txt', params)  # use X = np.loadtxt('data.txt') to read in array to variable X
     
     return L, params
-
-
-# In[62]:
-
-
-L, params = MCMC(0.5, 200, 0.1, 1, 1, n = 10000)
 
 
 # In[60]:
